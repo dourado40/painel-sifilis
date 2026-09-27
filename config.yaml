@@ -1,35 +1,14 @@
-import streamlit_authenticator as stauth
-import bcrypt
-
-# ⚠️ SENHA PADRÃO
-SENHA_PADRAO = 'certifica123'
-
-# Gera hash novo
-novo_hash = stauth.Hasher.hash(SENHA_PADRAO)
-
-print("=" * 70)
-print(f"Senha padrão definida: {SENHA_PADRAO}")
-print(f"Hash gerado: {novo_hash}")
-print(f"Tamanho do hash: {len(novo_hash)} caracteres")
-print("=" * 70)
-
-# Valida
-resultado = bcrypt.checkpw(SENHA_PADRAO.encode('utf-8'), novo_hash.encode('utf-8'))
-print(f"Hash válido para '{SENHA_PADRAO}'? {resultado}")
-print("=" * 70)
-
-# Reescreve o config.yaml automaticamente
-config_content = f"""credentials:
+credentials:
   usernames:
     admin:
       email: admin@caucaia.ce.gov.br
       name: Administrador
-      password: {novo_hash}
+      password: COLE_AQUI_O_HASH_DE_CERTIFICA123
       role: admin
     vigilancia:
       email: vigilancia@caucaia.ce.gov.br
       name: Equipe de Vigilância
-      password: {novo_hash}
+      password: COLE_AQUI_O_HASH_DE_CERTIFICA123
       role: user
 
 cookie:
@@ -39,11 +18,3 @@ cookie:
 
 preauthorized:
   emails: []
-"""
-
-with open('config.yaml', 'w', encoding='utf-8') as f:
-    f.write(config_content)
-
-print("✅ config.yaml LOCAL reescrito com sucesso!")
-print(f"⚠️ A senha padrão dos usuários 'admin' e 'vigilancia' é: {SENHA_PADRAO}")
-print("=" * 70)
