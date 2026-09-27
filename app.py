@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import yaml
+import bcrypt
 from yaml.loader import SafeLoader
 import streamlit_authenticator as stauth
 from utils import carregar_dados
@@ -123,10 +124,33 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ==========================================
-# 3. AUTENTICAÇÃO (LGPD)
+# 3. AUTENTICAÇÃO (LGPD) + DEBUG TEMPORÁRIO
 # ==========================================
 with open('config.yaml') as file:
     config = yaml.load(file, Loader=SafeLoader)
+
+# 🔍 DEBUG TEMPORÁRIO — REMOVER DEPOIS
+st.sidebar.markdown("### 🔍 Debug")
+_usuarios = list(config['credentials']['usernames'].keys())
+st.sidebar.write(f"**Usuários no YAML:** {_usuarios}")
+
+for _user in _usuarios:
+    _hash = config['credentials']['usernames'][_user]['password']
+    st.sidebar.write(f"**{_user}:** `{_hash}` (tam: {len(_hash)})")
+
+_testes = {'admin': 'certifica123', 'vigilancia': 'certifica123', 'marcela': 'certificamarcela'}
+for _user, _senha in _testes.items():
+    if _user in config['credentials']['usernames']:
+        _h = config['credentials']['usernames'][_user]['password']
+        try:
+            _ok = bcrypt.checkpw(_senha.encode(), _h.encode())
+            if _ok:
+                st.sidebar.success(f"✅ {_user}: senha correta")
+            else:
+                st.sidebar.error(f"❌ {_user}: senha NÃO confere")
+        except Exception as e:
+            st.sidebar.error(f"⚠️ {_user}: erro {e}")
+# 🔍 FIM DO DEBUG
 
 authenticator = stauth.Authenticate(
     config['credentials'],
@@ -137,35 +161,27 @@ authenticator = stauth.Authenticate(
 
 authenticator.login(location='sidebar')
 
-# --- Status de login + Trocar Senha ---
 if st.session_state.get("authentication_status") is False:
     st.error('❌ Usuário ou senha incorretos. Tente novamente.')
     st.stop()
-
 elif st.session_state.get("authentication_status") is None:
     st.warning('🔒 Faça login na barra lateral para acessar o painel completo.')
-
 else:
-    # ✅ Usuário logado → Mostra opções de conta na sidebar
     with st.sidebar.expander("🔐 Minha Conta"):
         st.markdown(f"**Logado como:** {st.session_state['name']}")
         st.markdown(f"**Usuário:** `{st.session_state['username']}`")
         st.divider()
-        st.markdown("**Trocar senha:**")
-
         try:
             if authenticator.reset_password(
                 st.session_state['username'],
                 location='sidebar'
             ):
-                # Quando a senha é alterada, salva o novo hash no config.yaml
                 with open('config.yaml', 'w') as file:
                     yaml.dump(config, file, default_flow_style=False)
                 st.success('✅ Senha alterada com sucesso!')
         except Exception as e:
             st.error(f"Erro ao alterar senha: {e}")
 
-    # Botão de logout na sidebar
     authenticator.logout('🚪 Sair', 'sidebar')
 
 # ==========================================
