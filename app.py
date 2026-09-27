@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import yaml
-import bcrypt
 from yaml.loader import SafeLoader
 import streamlit_authenticator as stauth
 from utils import carregar_dados
@@ -128,27 +127,6 @@ st.markdown("""
 # ==========================================
 with open('config.yaml') as file:
     config = yaml.load(file, Loader=SafeLoader)
-
-# 🔍 DIAGNÓSTICO TEMPORÁRIO — REMOVER DEPOIS
-st.sidebar.markdown("**🔍 Debug (temporário):**")
-_hash_admin = config['credentials']['usernames']['admin']['password']
-st.sidebar.code(f"HASH NO CONFIG:\n{_hash_admin}\n\nTamanho: {len(_hash_admin)}")
-
-# Teste 1: gerar um hash novo aqui na nuvem
-_novo_hash = stauth.Hasher.hash('senha123')
-st.sidebar.code(f"HASH GERADO AGORA:\n{_novo_hash}\n\nTamanho: {len(_novo_hash)}")
-
-# Teste 2: validar o hash do config
-try:
-    _resultado = bcrypt.checkpw(b'senha123', _hash_admin.encode('utf-8'))
-    if _resultado:
-        st.sidebar.success(f"✅ Hash do config válido? {_resultado}")
-    else:
-        st.sidebar.error(f"❌ Hash do config válido? {_resultado}")
-except Exception as e:
-    st.sidebar.error(f"❌ Erro ao validar: {e}")
-
-# 🔍 FIM DO DIAGNÓSTICO
 
 authenticator = stauth.Authenticate(
     config['credentials'],
