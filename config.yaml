@@ -1,0 +1,20 @@
+credentials:
+  usernames:
+    admin:
+      email: admin@caucaia.ce.gov.br
+      name: Administrador
+      password: $2b$12$9kpPE06Mc6dnR1akE6gWeOWMqwAnb9cPMZafeJcNN0fOo8qCqJXPO
+      role: admin
+    vigilancia:
+      email: vigilancia@caucaia.ce.gov.br
+      name: Equipe de Vigilância
+      password: $2b$12$9kpPE06Mc6dnR1akE6gWeOWMqwAnb9cPMZafeJcNN0fOo8qCqJXPO
+      role: user
+
+cookie:
+  expiry_days: 1
+  key: painel_sifilis_key_2026
+  name: painel_sifilis_cookie
+
+preauthorized:
+  emails: []
