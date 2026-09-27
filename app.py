@@ -128,6 +128,11 @@ st.markdown("""
 with open('config.yaml') as file:
     config = yaml.load(file, Loader=SafeLoader)
 
+# 🔍 DIAGNÓSTICO TEMPORÁRIO — REMOVER DEPOIS
+st.sidebar.markdown("**🔍 Debug (temporário):**")
+_hash_admin = config['credentials']['usernames']['admin']['password']
+st.sidebar.code(f"{_hash_admin}\n\nTamanho: {len(_hash_admin)}")
+
 authenticator = stauth.Authenticate(
     config['credentials'],
     config['cookie']['name'],
