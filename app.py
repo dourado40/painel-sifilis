@@ -137,11 +137,36 @@ authenticator = stauth.Authenticate(
 
 authenticator.login(location='sidebar')
 
+# --- Status de login + Trocar Senha ---
 if st.session_state.get("authentication_status") is False:
     st.error('❌ Usuário ou senha incorretos. Tente novamente.')
     st.stop()
+
 elif st.session_state.get("authentication_status") is None:
     st.warning('🔒 Faça login na barra lateral para acessar o painel completo.')
+
+else:
+    # ✅ Usuário logado → Mostra opções de conta na sidebar
+    with st.sidebar.expander("🔐 Minha Conta"):
+        st.markdown(f"**Logado como:** {st.session_state['name']}")
+        st.markdown(f"**Usuário:** `{st.session_state['username']}`")
+        st.divider()
+        st.markdown("**Trocar senha:**")
+
+        try:
+            if authenticator.reset_password(
+                st.session_state['username'],
+                location='sidebar'
+            ):
+                # Quando a senha é alterada, salva o novo hash no config.yaml
+                with open('config.yaml', 'w') as file:
+                    yaml.dump(config, file, default_flow_style=False)
+                st.success('✅ Senha alterada com sucesso!')
+        except Exception as e:
+            st.error(f"Erro ao alterar senha: {e}")
+
+    # Botão de logout na sidebar
+    authenticator.logout('🚪 Sair', 'sidebar')
 
 # ==========================================
 # 4. CARREGAMENTO DOS DADOS
