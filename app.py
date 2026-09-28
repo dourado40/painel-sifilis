@@ -58,7 +58,6 @@ st.markdown("""
     div[data-testid="stAlert"] {
         background-color: #FEF3C7 !important;
         border: 1px solid #F59E0B !important;
-        color: #78350F !important;
     }
     div[data-testid="stAlert"] * {
         color: #78350F !important;
@@ -69,9 +68,7 @@ st.markdown("""
         fill: #78350F !important;
     }
 
-    /* ============================================
-       ESCONDER APENAS O "STALE" DURANTE LOADING
-       ============================================ */
+    /* Esconder apenas o "stale" durante loading */
     div[data-testid="stStatusWidget"] { display: none; }
     div[data-testid="stDecoration"] { display: none; }
     .stSpinner > div { border-top-color: #1E3A8A !important; }
@@ -147,7 +144,6 @@ st.markdown("""
         font-size: 22px !important;
         font-weight: 800 !important;
     }
-    /* Reduz o padding do formulário de login */
     section[data-testid="stSidebar"] [data-testid="stForm"] {
         border: none !important;
         padding: 0 !important;
@@ -629,18 +625,23 @@ with col_graf5:
     if 'Ano' in df.columns:
         df_anual = df.groupby('Ano').size().reset_index(name='Casos')
         df_anual = df_anual.sort_values('Ano')
+        
         fig_anual = px.bar(
             df_anual, x='Ano', y='Casos',
             title=f"Total de Casos por Ano - {tipo_sifilis}",
-            color='Ano', text_auto=True,
-            color_discrete_sequence=['#1E3A8A', '#1E40AF', '#2563EB',
-                                     '#3B82F6', '#60A5FA', '#93C5FD']
+            text_auto=True
         )
+        
+        # Cor única (azul institucional escuro) para TODAS as barras
         fig_anual.update_traces(
+            marker=dict(
+                color='#1E3A8A',
+                line=dict(color='white', width=1.5)
+            ),
             textfont=dict(size=14, color='white'),
-            textposition='inside',
-            marker=dict(line=dict(color='white', width=1.5))
+            textposition='inside'
         )
+        
         fig_anual.update_layout(showlegend=False)
         fig_anual = aplicar_tema_profissional(fig_anual)
         st.plotly_chart(fig_anual, use_container_width=True, key=f"anual_{tipo_sifilis}")
@@ -652,27 +653,24 @@ with col_graf6:
         df_esc.columns = ['Escolaridade', 'Casos']
         df_esc = df_esc.sort_values('Casos', ascending=True)
         
-        # Cor única para todas as barras (mais escura para melhor contraste)
         fig_esc = px.bar(
             df_esc, x='Casos', y='Escolaridade',
             title=f"Casos por Escolaridade - {tipo_sifilis}",
             orientation='h', text_auto=True
         )
-        # Aplica cor única em gradiente do escuro para o claro
+        
+        # Cor única azul médio + texto PRETO FORA da barra (sempre legível)
         fig_esc.update_traces(
             marker=dict(
-                color=df_esc['Casos'],
-                colorscale=[
-                    [0.0, '#60A5FA'],
-                    [0.5, '#2563EB'],
-                    [1.0, '#1E3A8A']
-                ],
-                showscale=False,
+                color='#2563EB',
                 line=dict(color='white', width=1.5)
             ),
-            textfont=dict(size=11, color='white'),
-            textposition='inside'
+            textfont=dict(size=12, color='#0F172A'),
+            textposition='outside',
+            cliponaxis=False
         )
+        
+        fig_esc.update_layout(showlegend=False)
         fig_esc = aplicar_tema_profissional(fig_esc, altura=420)
         st.plotly_chart(fig_esc, use_container_width=True, key=f"escol_{tipo_sifilis}")
 
