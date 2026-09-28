@@ -3,17 +3,17 @@ credentials:
     admin:
       email: admin@caucaia.ce.gov.br
       name: Administrador
-      password: $2b$12$vu/pYhP7ziuabimM0YHtMuC09fnb9t0HNpnV0YUy9tfL1SAt9/ode
+      password: $2b$12$PzumTz0.EFjzWDSsl/ZFsOtwtjCHgqUXXOazlXE32hrrSutappNoq
       role: admin
     vigilancia:
       email: vigilancia@caucaia.ce.gov.br
       name: Equipe de Vigilância
-      password: $2b$12$vu/pYhP7ziuabimM0YHtMuC09fnb9t0HNpnV0YUy9tfL1SAt9/ode
+      password: $2b$12$CnYJJruKkJh6iETx9YE46edYxTmdl8j3XV3WJnNkkrsgw5IjKebf6
       role: user
     marcela:
       email: marcela@caucaia.ce.gov.br
       name: Marcela
-      password: $2b$12$Qk6zRnGfU.EEDVZLJ3re6VCv6qCiSw2hYyTzk1htWEa78RUmD2KT6
+      password: $2b$12$HlOBrqiKE0WnzPDNePh2heb.cINp.KN14HGJhcsgOqUB60T5eD0WK
       role: user
 
 cookie:
