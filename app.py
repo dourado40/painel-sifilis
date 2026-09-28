@@ -44,8 +44,6 @@ st.markdown("""
         display: none !important;
         visibility: hidden !important;
     }
-
-    /* Remove padding extra do topo */
     .block-container {
         padding-top: 0 !important;
         padding-bottom: 1rem !important;
@@ -53,19 +51,20 @@ st.markdown("""
     }
 
     /* ============================================
-       CORRIGIR TARJA AMARELA (AVISO) - texto visível
+       TARJA DE AVISO - AZUL INSTITUCIONAL
        ============================================ */
     div[data-testid="stAlert"] {
-        background-color: #FEF3C7 !important;
-        border: 1px solid #F59E0B !important;
+        background-color: #DBEAFE !important;
+        border: 1px solid #3B82F6 !important;
+        border-left: 5px solid #1E3A8A !important;
     }
     div[data-testid="stAlert"] * {
-        color: #78350F !important;
+        color: #1E3A8A !important;
         font-weight: 600 !important;
         opacity: 1 !important;
     }
     div[data-testid="stAlert"] svg {
-        fill: #78350F !important;
+        fill: #1E3A8A !important;
     }
 
     /* Esconder apenas o "stale" durante loading */
@@ -94,7 +93,7 @@ st.markdown("""
     }
 
     /* ============================================
-       CARDS DE MÉTRICA
+       CARDS DE MÉTRICA - ALTURA PADRONIZADA
        ============================================ */
     div[data-testid="stMetric"] {
         background-color: #FFFFFF;
@@ -105,6 +104,10 @@ st.markdown("""
         position: relative;
         overflow: hidden;
         transition: all 0.2s ease;
+        min-height: 130px !important;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
     }
     div[data-testid="stMetric"]:hover {
         transform: translateY(-2px);
@@ -166,6 +169,13 @@ st.markdown("""
     h3 { font-size: 18px !important; }
 
     /* ============================================
+       GRÁFICOS - ALTURA PADRONIZADA
+       ============================================ */
+    div[data-testid="stPlotlyChart"] {
+        min-height: 420px !important;
+    }
+
+    /* ============================================
        TABELA
        ============================================ */
     .stDataFrame {
@@ -220,6 +230,7 @@ st.markdown("""
         div[data-testid="stMetric"] {
             padding: 12px 15px;
             margin-bottom: 8px;
+            min-height: 100px !important;
         }
         div[data-testid="stMetric"] label {
             font-size: 10px !important;
@@ -232,6 +243,9 @@ st.markdown("""
 
         section[data-testid="stSidebar"] h1 {
             font-size: 18px !important;
+        }
+        div[data-testid="stPlotlyChart"] {
+            min-height: 320px !important;
         }
     }
 </style>
@@ -313,7 +327,7 @@ def decodificar_idade(valor):
 # ==========================================
 # 5.1. FUNÇÃO PARA APLICAR TEMA PROFISSIONAL AOS GRÁFICOS
 # ==========================================
-def aplicar_tema_profissional(fig, altura=380):
+def aplicar_tema_profissional(fig, altura=420):
     fig.update_layout(
         height=altura,
         plot_bgcolor='#FFFFFF',
@@ -498,7 +512,6 @@ with col_graf1:
             markers=True,
             color_discrete_sequence=['#1E3A8A']
         )
-
         fig_linha.update_traces(
             line=dict(width=3, color='#1E3A8A'),
             marker=dict(size=6, color='#1E3A8A',
@@ -506,41 +519,20 @@ with col_graf1:
             fillcolor='rgba(30, 58, 138, 0.15)',
             hovertemplate='<b>%{x|%b/%Y}</b><br>Casos: %{y}<extra></extra>'
         )
-
         fig_linha.update_xaxes(
-            tickmode='auto',
-            nticks=8,
-            tickformat="%b/%y",
-            tickangle=-30,
-            tickfont=dict(size=10, color='#334155'),
-            showgrid=False,
-            title=""
+            tickmode='auto', nticks=8, tickformat="%b/%y", tickangle=-30,
+            tickfont=dict(size=10, color='#334155'), showgrid=False, title=""
         )
-
         fig_linha.update_yaxes(
-            showgrid=True,
-            gridcolor='#E2E8F0',
-            gridwidth=1,
-            title="Casos notificados",
-            tickfont=dict(size=11, color='#334155')
+            showgrid=True, gridcolor='#E2E8F0', gridwidth=1,
+            title="Casos notificados", tickfont=dict(size=11, color='#334155')
         )
-
         fig_linha = aplicar_tema_profissional(fig_linha, altura=420)
-
         fig_linha.update_xaxes(
-            tickmode='auto',
-            nticks=8,
-            tickformat="%b/%y",
-            tickangle=-30,
-            tickfont=dict(size=10, color='#334155'),
-            showgrid=False,
-            title=""
+            tickmode='auto', nticks=8, tickformat="%b/%y", tickangle=-30,
+            tickfont=dict(size=10, color='#334155'), showgrid=False, title=""
         )
-
-        fig_linha.update_layout(
-            margin=dict(l=20, r=20, t=60, b=70)
-        )
-
+        fig_linha.update_layout(margin=dict(l=20, r=20, t=60, b=70))
         st.plotly_chart(fig_linha, use_container_width=True, key=f"linha_{tipo_sifilis}")
     else:
         st.info("Colunas de Ano/Mês não encontradas.")
@@ -557,12 +549,11 @@ with col_graf2:
                                      '#F59E0B', '#EF4444', '#10B981', '#8B5CF6']
         )
         fig_raca.update_traces(
-            textposition='outside',
-            textinfo='percent+label',
+            textposition='outside', textinfo='percent+label',
             textfont=dict(size=12, color='#1E293B'),
             marker=dict(line=dict(color='white', width=2))
         )
-        fig_raca = aplicar_tema_profissional(fig_raca)
+        fig_raca = aplicar_tema_profissional(fig_raca, altura=420)
         st.plotly_chart(fig_raca, use_container_width=True, key=f"pizza_{tipo_sifilis}")
 
 col_graf3, col_graf4 = st.columns(2)
@@ -584,7 +575,7 @@ with col_graf3:
             marker=dict(line=dict(color='white', width=1.5))
         )
         fig_sexo.update_layout(showlegend=False)
-        fig_sexo = aplicar_tema_profissional(fig_sexo)
+        fig_sexo = aplicar_tema_profissional(fig_sexo, altura=420)
         st.plotly_chart(fig_sexo, use_container_width=True, key=f"sexo_{tipo_sifilis}")
 
 with col_graf4:
@@ -615,7 +606,7 @@ with col_graf4:
                 marker=dict(line=dict(color='white', width=1.5))
             )
             fig_idade.update_layout(showlegend=False)
-            fig_idade = aplicar_tema_profissional(fig_idade)
+            fig_idade = aplicar_tema_profissional(fig_idade, altura=420)
             st.plotly_chart(fig_idade, use_container_width=True, key=f"idade_{tipo_sifilis}")
 
 col_graf5, col_graf6 = st.columns(2)
@@ -625,25 +616,18 @@ with col_graf5:
     if 'Ano' in df.columns:
         df_anual = df.groupby('Ano').size().reset_index(name='Casos')
         df_anual = df_anual.sort_values('Ano')
-        
         fig_anual = px.bar(
             df_anual, x='Ano', y='Casos',
             title=f"Total de Casos por Ano - {tipo_sifilis}",
             text_auto=True
         )
-        
-        # Cor única (azul institucional escuro) para TODAS as barras
         fig_anual.update_traces(
-            marker=dict(
-                color='#1E3A8A',
-                line=dict(color='white', width=1.5)
-            ),
+            marker=dict(color='#1E3A8A', line=dict(color='white', width=1.5)),
             textfont=dict(size=14, color='white'),
             textposition='inside'
         )
-        
         fig_anual.update_layout(showlegend=False)
-        fig_anual = aplicar_tema_profissional(fig_anual)
+        fig_anual = aplicar_tema_profissional(fig_anual, altura=420)
         st.plotly_chart(fig_anual, use_container_width=True, key=f"anual_{tipo_sifilis}")
 
 with col_graf6:
@@ -652,24 +636,17 @@ with col_graf6:
         df_esc = df['CS_ESCOL_N'].value_counts().reset_index()
         df_esc.columns = ['Escolaridade', 'Casos']
         df_esc = df_esc.sort_values('Casos', ascending=True)
-        
         fig_esc = px.bar(
             df_esc, x='Casos', y='Escolaridade',
             title=f"Casos por Escolaridade - {tipo_sifilis}",
             orientation='h', text_auto=True
         )
-        
-        # Cor única azul médio + texto PRETO FORA da barra (sempre legível)
         fig_esc.update_traces(
-            marker=dict(
-                color='#2563EB',
-                line=dict(color='white', width=1.5)
-            ),
+            marker=dict(color='#2563EB', line=dict(color='white', width=1.5)),
             textfont=dict(size=12, color='#0F172A'),
             textposition='outside',
             cliponaxis=False
         )
-        
         fig_esc.update_layout(showlegend=False)
         fig_esc = aplicar_tema_profissional(fig_esc, altura=420)
         st.plotly_chart(fig_esc, use_container_width=True, key=f"escol_{tipo_sifilis}")
