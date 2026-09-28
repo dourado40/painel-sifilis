@@ -21,17 +21,16 @@ st.set_page_config(
 # ==========================================
 st.markdown("""
 <style>
+    /* Fundo geral */
     .stApp { background-color: #F1F5F9; }
 
-    /* Atenua o efeito de "stale" durante o carregamento */
-    div[data-testid="stStatusWidget"] { display: none; }
-    div[data-testid="stDecoration"] { display: none; }
-    .stSpinner > div { border-top-color: #1E3A8A !important; }
-
-    /* Esconde a barra superior do Streamlit Cloud (mobile e desktop) */
+    /* ============================================
+       REMOVER BARRA SUPERIOR E ESPAÇOS EM BRANCO
+       ============================================ */
     header[data-testid="stHeader"] {
         display: none !important;
         height: 0 !important;
+        visibility: hidden !important;
     }
     div[data-testid="stToolbar"] {
         display: none !important;
@@ -46,17 +45,46 @@ st.markdown("""
         visibility: hidden !important;
     }
 
-    /* Reduz o espaço em branco no topo */
+    /* Remove padding extra do topo */
     .block-container {
-        padding-top: 1.5rem !important;
+        padding-top: 0 !important;
         padding-bottom: 1rem !important;
+        max-width: 100% !important;
     }
 
+    /* ============================================
+       CORRIGIR TARJA AMARELA (AVISO) - texto visível
+       ============================================ */
+    div[data-testid="stAlert"] {
+        background-color: #FEF3C7 !important;
+        border: 1px solid #F59E0B !important;
+        color: #78350F !important;
+    }
+    div[data-testid="stAlert"] * {
+        color: #78350F !important;
+        font-weight: 600 !important;
+        opacity: 1 !important;
+    }
+    div[data-testid="stAlert"] svg {
+        fill: #78350F !important;
+    }
+
+    /* ============================================
+       ESCONDER APENAS O "STALE" DURANTE LOADING
+       ============================================ */
+    div[data-testid="stStatusWidget"] { display: none; }
+    div[data-testid="stDecoration"] { display: none; }
+    .stSpinner > div { border-top-color: #1E3A8A !important; }
+
+    /* ============================================
+       CABEÇALHO INSTITUCIONAL
+       ============================================ */
     .header-institucional {
         background: linear-gradient(90deg, #1E3A8A 0%, #2563EB 100%);
         padding: 24px 32px;
         border-radius: 12px;
         margin-bottom: 25px;
+        margin-top: 10px;
         color: white;
         box-shadow: 0 6px 16px rgba(30, 58, 138, 0.25);
     }
@@ -68,6 +96,9 @@ st.markdown("""
         color: #DBEAFE; margin: 8px 0 0 0; font-size: 14px;
     }
 
+    /* ============================================
+       CARDS DE MÉTRICA
+       ============================================ */
     div[data-testid="stMetric"] {
         background-color: #FFFFFF;
         border: 1px solid #CBD5E1;
@@ -104,6 +135,9 @@ st.markdown("""
         letter-spacing: -0.5px;
     }
 
+    /* ============================================
+       SIDEBAR (LOGIN E FILTROS)
+       ============================================ */
     section[data-testid="stSidebar"] {
         background-color: #FFFFFF;
         border-right: 1px solid #CBD5E1;
@@ -113,7 +147,18 @@ st.markdown("""
         font-size: 22px !important;
         font-weight: 800 !important;
     }
+    /* Reduz o padding do formulário de login */
+    section[data-testid="stSidebar"] [data-testid="stForm"] {
+        border: none !important;
+        padding: 0 !important;
+    }
+    section[data-testid="stSidebar"] .stTextInput {
+        margin-bottom: 8px !important;
+    }
 
+    /* ============================================
+       TÍTULOS
+       ============================================ */
     h2, h3 {
         color: #1E3A8A !important;
         font-weight: 800 !important;
@@ -124,6 +169,9 @@ st.markdown("""
     h2 { font-size: 22px !important; }
     h3 { font-size: 18px !important; }
 
+    /* ============================================
+       TABELA
+       ============================================ */
     .stDataFrame {
         border-radius: 10px;
         overflow: hidden;
@@ -131,6 +179,9 @@ st.markdown("""
         box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
     }
 
+    /* ============================================
+       BOTÕES
+       ============================================ */
     .stButton > button, .stDownloadButton > button {
         background-color: #1E3A8A;
         color: white;
@@ -149,22 +200,42 @@ st.markdown("""
         margin: 30px 0 !important;
     }
 
-    /* Ajustes para celular (responsividade) */
+    /* ============================================
+       RESPONSIVIDADE MOBILE
+       ============================================ */
     @media (max-width: 768px) {
+        .block-container {
+            padding-top: 0 !important;
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }
         .header-institucional {
             padding: 16px 20px;
+            margin-top: 5px;
         }
         .header-institucional h1 {
-            font-size: 22px;
+            font-size: 20px;
+            line-height: 1.2;
         }
         .header-institucional p {
-            font-size: 12px;
+            font-size: 11px;
+            line-height: 1.3;
         }
         div[data-testid="stMetric"] {
-            padding: 15px 18px;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+        }
+        div[data-testid="stMetric"] label {
+            font-size: 10px !important;
         }
         div[data-testid="stMetric"] div[data-testid="stMetricValue"] {
-            font-size: 28px !important;
+            font-size: 24px !important;
+        }
+        h2 { font-size: 18px !important; }
+        h3 { font-size: 16px !important; }
+
+        section[data-testid="stSidebar"] h1 {
+            font-size: 18px !important;
         }
     }
 </style>
@@ -580,19 +651,28 @@ with col_graf6:
         df_esc = df['CS_ESCOL_N'].value_counts().reset_index()
         df_esc.columns = ['Escolaridade', 'Casos']
         df_esc = df_esc.sort_values('Casos', ascending=True)
+        
+        # Cor única para todas as barras (mais escura para melhor contraste)
         fig_esc = px.bar(
             df_esc, x='Casos', y='Escolaridade',
             title=f"Casos por Escolaridade - {tipo_sifilis}",
-            orientation='h', text_auto=True,
-            color='Casos',
-            color_continuous_scale='Blues'
+            orientation='h', text_auto=True
         )
+        # Aplica cor única em gradiente do escuro para o claro
         fig_esc.update_traces(
+            marker=dict(
+                color=df_esc['Casos'],
+                colorscale=[
+                    [0.0, '#60A5FA'],
+                    [0.5, '#2563EB'],
+                    [1.0, '#1E3A8A']
+                ],
+                showscale=False,
+                line=dict(color='white', width=1.5)
+            ),
             textfont=dict(size=11, color='white'),
-            textposition='inside',
-            marker=dict(line=dict(color='white', width=1.5))
+            textposition='inside'
         )
-        fig_esc.update_layout(coloraxis_showscale=False)
         fig_esc = aplicar_tema_profissional(fig_esc, altura=420)
         st.plotly_chart(fig_esc, use_container_width=True, key=f"escol_{tipo_sifilis}")
 
