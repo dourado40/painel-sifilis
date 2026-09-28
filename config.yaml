@@ -1,19 +1,40 @@
-credentials:
+import streamlit_authenticator as stauth
+import bcrypt
+
+# Senhas dos 3 usuários
+senhas = {
+    'admin': 'certifica123',
+    'vigilancia': 'certifica123',
+    'marcela': 'certificamarcela'
+}
+
+# Gera hashes
+hashes = {}
+for user, senha in senhas.items():
+    h = stauth.Hasher.hash(senha)
+    hashes[user] = h
+    print(f"{user}: {h}")
+    # Valida imediatamente
+    ok = bcrypt.checkpw(senha.encode(), h.encode())
+    print(f"  -> válido? {ok}")
+
+# Escreve o config.yaml
+config_content = f"""credentials:
   usernames:
     admin:
       email: admin@caucaia.ce.gov.br
       name: Administrador
-      password: $2b$12$vu/pYhP7ziuabimM0YHtMuC09fnb9t0HNpnV0YUy9tfL1SAt9/ode
+      password: {hashes['admin']}
       role: admin
     vigilancia:
       email: vigilancia@caucaia.ce.gov.br
       name: Equipe de Vigilância
-      password: $2b$12$vu/pYhP7ziuabimM0YHtMuC09fnb9t0HNpnV0YUy9tfL1SAt9/ode
+      password: {hashes['vigilancia']}
       role: user
     marcela:
       email: marcela@caucaia.ce.gov.br
       name: Marcela
-      password: $2b$12$JD6DmhasfeYZ.px4cFg.UOb19j0HvOkB0ykK4zWr03CqAqEer9Tmq
+      password: {hashes['marcela']}
       role: user
 
 cookie:
@@ -23,3 +44,24 @@ cookie:
 
 preauthorized:
   emails: []
+"""
+
+with open('config.yaml', 'w', encoding='utf-8') as f:
+    f.write(config_content)
+
+print("=" * 70)
+print("✅ config.yaml reescrito com sucesso!")
+print("=" * 70)
+
+# Confirma relendo o arquivo
+import yaml
+from yaml.loader import SafeLoader
+
+with open('config.yaml') as f:
+    cfg = yaml.load(f, Loader=SafeLoader)
+
+print("\n🔍 CONFIRMAÇÃO (relendo o arquivo):")
+for user, senha in senhas.items():
+    h = cfg['credentials']['usernames'][user]['password']
+    ok = bcrypt.checkpw(senha.encode(), h.encode())
+    print(f"  {user}: válido? {ok}")
