@@ -5,4 +5,4 @@ plotly
 numpy
 streamlit-authenticator
 PyYAML
-bcrypt==5.0.0
+bcrypt==4.0.1
