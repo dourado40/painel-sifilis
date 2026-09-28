@@ -28,6 +28,30 @@ st.markdown("""
     div[data-testid="stDecoration"] { display: none; }
     .stSpinner > div { border-top-color: #1E3A8A !important; }
 
+    /* Esconde a barra superior do Streamlit Cloud (mobile e desktop) */
+    header[data-testid="stHeader"] {
+        display: none !important;
+        height: 0 !important;
+    }
+    div[data-testid="stToolbar"] {
+        display: none !important;
+        visibility: hidden !important;
+    }
+    footer {
+        display: none !important;
+        visibility: hidden !important;
+    }
+    #MainMenu {
+        display: none !important;
+        visibility: hidden !important;
+    }
+
+    /* Reduz o espaço em branco no topo */
+    .block-container {
+        padding-top: 1.5rem !important;
+        padding-bottom: 1rem !important;
+    }
+
     .header-institucional {
         background: linear-gradient(90deg, #1E3A8A 0%, #2563EB 100%);
         padding: 24px 32px;
@@ -123,6 +147,25 @@ st.markdown("""
     hr {
         border-color: #CBD5E1 !important;
         margin: 30px 0 !important;
+    }
+
+    /* Ajustes para celular (responsividade) */
+    @media (max-width: 768px) {
+        .header-institucional {
+            padding: 16px 20px;
+        }
+        .header-institucional h1 {
+            font-size: 22px;
+        }
+        .header-institucional p {
+            font-size: 12px;
+        }
+        div[data-testid="stMetric"] {
+            padding: 15px 18px;
+        }
+        div[data-testid="stMetric"] div[data-testid="stMetricValue"] {
+            font-size: 28px !important;
+        }
     }
 </style>
 """, unsafe_allow_html=True)
